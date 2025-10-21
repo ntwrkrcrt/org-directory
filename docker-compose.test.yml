@@ -1,0 +1,52 @@
+services:
+  test-db:
+    image: postgis/postgis:15-3.4-alpine
+    container_name: test_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: test_organization_catalog
+    ports:
+      - "5434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 3s
+      retries: 5
+    tmpfs:
+      - /var/lib/postgresql/data
+
+  test-redis:
+    image: redis:7-alpine
+    container_name: test_redis
+    restart: unless-stopped
+    ports:
+      - "6383:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 5
+
+  test-app:
+    build: .
+    container_name: test_app
+    env_file:
+      - ./.env.test
+    environment:
+      PYTHONDONTWRITEBYTECODE: 1
+      PYTHONUNBUFFERED: 1
+    depends_on:
+      test-db:
+        condition: service_healthy
+      test-redis:
+        condition: service_healthy
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        until pg_isready -h test-db -U postgres; do sleep 1; done
+        alembic upgrade head
+        pytest tests -v
+    volumes:
+      - .:/app
