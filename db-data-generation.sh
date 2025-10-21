@@ -44,7 +44,15 @@ INSERT INTO activities (id, name, level, parent_id) VALUES
 (7, 'Розничная торговля', 1, NULL),
 (8, 'Консалтинг', 1, NULL),
 (9, 'Продукты питания', 1, NULL),
-(10, 'Металлургия', 1, NULL);
+(10, 'Металлургия', 1, NULL),
+(11, 'Мясная продукция', 2, 9),
+(12, 'Молочная продукция', 2, 9),
+(13, 'Сыры', 3, 12),
+(14, 'Фермерские продукты', 3, 12),
+(15, 'Грузовые авиаперевозки', 2, 5),
+(16, 'Пассажирские авиаперевозки', 2, 5),
+(17, 'Онлайн-торговля', 2, 7),
+(18, 'Маркетплейс', 3, 17);
 
 INSERT INTO organizations (id, name, building_id) VALUES
 (1, 'ООО «Яндекс»', 1),
@@ -60,17 +68,24 @@ INSERT INTO organizations (id, name, building_id) VALUES
 
 INSERT INTO organization_activities (organization_id, activity_id) VALUES
 (1, 1),
+(1, 17),
 (2, 2),
 (3, 2),
 (4, 3),
 (5, 3),
 (6, 6),
 (7, 5),
+(7, 15),
+(7, 16),
+(8, 4),
 (8, 10),
 (9, 7),
+(9, 11),
+(9, 12),
+(9, 13),
+(9, 14),
 (10, 1),
-(10, 7),
-(5, 8);
+(10, 18);
 
 INSERT INTO phones (number, organization_id) VALUES
 ('8-495-111-11-11', 1),
